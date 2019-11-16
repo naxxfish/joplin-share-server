@@ -1,5 +1,4 @@
 process.env.NODE_ENV = 'test';
-const mock = require('mock-require');
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
 chai.should();
@@ -13,29 +12,38 @@ const TEST_NOTE = {
 	originator: 'abc@123.com',
 	dateCreated: '2019-11-16T16:42:25.600Z',
 };
-
-const dbMock = {
-	set: () => { return true; },
-	get: (key, callback) => {
-		if (key === `note.${TEST_NOTE_ID}`) {
-			callback(null, JSON.stringify(TEST_NOTE));
-		} else {
-			callback(new Error('key does not exist'));
-		}
-	},
-};
-
-mock('../src/util/db', dbMock);
-const Note = require('../src/models/note');
-
-
-
+const redis = require('redis');
+// stub the connection so that we don't connect to redis
+let Note;
+let redisClientStub;
 describe('NoteModel', function() {
-	describe('getNote', function() {
-		let dbGetSpy;
-		before(function() {
-			dbGetSpy = sinon.spy(dbMock, 'get');
+	let dbGetSpy;
+	let dbSetSpy;
+	let db;
+	before(function() {
+		redisClientStub = sinon.stub(redis, 'createClient').returns({
+			on: () => { },
+			get: () => { },
+			set: () => { },
 		});
+		Note = require('../src/models/note');
+		db = require('../src/util/db');
+		dbGetSpy = sinon.stub(db, 'get').callsFake((key, callback) => {
+			if (key === `note.${TEST_NOTE_ID}`) {
+				callback(null, JSON.stringify(TEST_NOTE));
+			} else {
+				callback(new Error('key does not exist'));
+			}
+		});
+		dbSetSpy = sinon.stub(db, 'set').returns(true);
+	});
+
+	after(function() {
+		delete require.cache[require.resolve('redis')];
+		redisClientStub.restore();
+	});
+
+	describe('getNote', function() {
 		afterEach(function() {
 			dbGetSpy.resetHistory();
 		});
@@ -51,11 +59,8 @@ describe('NoteModel', function() {
 			chai.expect(Note.getNote('abc123')).to.be.rejectedWith(Error);
 		});
 	});
+
 	describe('createNote', function() {
-		let dbSetSpy;
-		before(function() {
-			dbSetSpy = sinon.spy(dbMock, 'set');
-		});
 		afterEach(function() {
 			dbSetSpy.resetHistory();
 		});
@@ -90,5 +95,4 @@ describe('NoteModel', function() {
 			}).to.throw();
 		});
 	});
-
 });
