@@ -3,8 +3,9 @@ module.exports = {
 		'browser': false,
 		'es6': true,
 		'node': true,
+		'mocha': true
 	},
-	'extends': ['eslint:recommended'],
+	'extends': ['eslint:recommended', 'plugin:mocha/recommended'],
 	'parserOptions': {
 		'ecmaVersion': 2018,
 	    "sourceType": "module",
@@ -52,5 +53,8 @@ module.exports = {
 		"space-before-blocks": "error",
 		"spaced-comment": ["error", "always"],
 		"keyword-spacing": ["error", { "before": true, "after": true }]
-	}
+	},
+	"plugins": [
+		"mocha"
+	],
 };

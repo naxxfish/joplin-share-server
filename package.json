@@ -6,8 +6,9 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-    "lint": "./node_modules/.bin/eslint --ext .js --fix src",
-    "lint-ci": "./node_modules/.bin/eslint --ext .js src"
+    "lint": "./node_modules/.bin/eslint --ext .js --fix src test",
+    "lint-ci": "./node_modules/.bin/eslint --ext .js src test",
+    "test": "mocha ./test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,12 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "eslint": "^6.6.0"
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^6.6.0",
+    "eslint-plugin-mocha": "^6.2.1",
+    "mocha": "^6.2.2",
+    "mock-require": "^3.0.3",
+    "sinon": "^7.5.0"
   }
 }
