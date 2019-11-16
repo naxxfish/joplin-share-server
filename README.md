@@ -59,47 +59,6 @@ It is not possible to overwrite an existing note. Version numbers increment as u
 }
 ```
 
-### PATCH Note
-
-Used to add an update to a note that has been posted previously
-
-It is not possible to overwrite an existing note. Version numbers increment as updates are applied to them. 
-
-**URL**:  `/note/:nodeId`
-**Method**: `PATCH`
-**Data constraints**
-```json
-{
-    "encryption": "AES-128",
-    "noteUpdateContents":"<base64 encoded encrypted note>",
-    "originator": "your_unique_id"
-}
-```
-**Data example**
-If we apply an update, in plaintext our update looks like this:
-```json
-{"noteId":"2f01d661-d9f7-468d-b940-067552e12641","orginator":"chris[AT]naxxfish.net","updates": [{"operation":"delete","entity":"2f01d661-d9f7-468d-b940-067552e12641"}]}
-```
-This is encrypted with AES-128 before sending to the server - and that is what you see in `noteUpdateContents`
-
-***Request***:
-`PATCH /note/2f01d661-d9f7-468d-b940-067552e12641`
-
-The AES-128 passphrase is `JoplinIsCool`
-```json
-{
-    "encryption": "AES-128",
-    "originator":"chris[AT]naxxfish.net",
-    "noteUpdateContents": "OzqfRZtpB+LH5E7SFo/lswbcmuN/TVZWL5FADGq6kl2hfsjOs0UoVyP9dIXh/hlsaNo/ZtWjSsEf0tJOX/lgwuxYet5iKm90sZoVk8/i3iZ11TAZFqRwyVmevhRLUviguSU+xVSgGh01XtN7ZzpHTssNz+yzzn/9F2VB17cupsACBZJCSvzDQoA3Y6LZ9vyU"
-}
-```
-***Response***:
-```json
-{
-    "noteId": "2f01d661-d9f7-468d-b940-067552e12641",
-    "version": "2" 
-}
-```
 ### GET Note
 
 Retrieves an encrypted note from the server. 
