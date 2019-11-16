@@ -1,6 +1,6 @@
 # Joplin Share Server
 
-![GitHub package.json version](https://img.shields.io/github/package-json/v/naxxfish/joplin-share-server)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/naxxfish/joplin-share-server) ![Travis (.org)](https://img.shields.io/travis/naxxfish/joplin-share-server)
 
 [Joplin](https://joplinapp.org/) is a free, open source note taking and to-do application, which can handle a large number of notes organised into notebooks. The notes are in [Markdown Format](https://github.com/laurent22/joplin#markdown)
 
