@@ -1,0 +1,22 @@
+{
+  "author": "Chris Roberts <chris@naxxfish.net> (http://naxxfish.net/)",
+  "name": "joplin-share-server",
+  "description": "Backend to enable encrypted note sharing in Joplin",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naxxfish/joplin-share-server"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/naxxfish/joplin-share-server/issues"
+  },
+  "homepage": "https://github.com/naxxfish/joplin-share-server",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
