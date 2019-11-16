@@ -6,8 +6,8 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
-				"lint": "./node_modules/.bin/eslint --ext .js --fix src",
-				"lint-ci": "./node_modules/.bin/eslint --ext .js src"
+    "lint": "./node_modules/.bin/eslint --ext .js --fix src",
+    "lint-ci": "./node_modules/.bin/eslint --ext .js src"
   },
   "repository": {
     "type": "git",
@@ -19,9 +19,14 @@
   },
   "homepage": "https://github.com/naxxfish/joplin-share-server",
   "dependencies": {
-    "eslint": "^6.6.0",
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "express-winston": "^4.0.1",
     "redis": "^2.8.0",
+    "uuid": "^3.3.3",
     "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.6.0"
   }
 }
