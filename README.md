@@ -2,7 +2,7 @@
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/naxxfish/joplin-share-server)
 
-[Joplin](https://joplinapp.org/) is a free, open source note taking and to-do application, which can handle a large number of notes organised into notebooks. The notes are in [Markdown Format(https://github.com/laurent22/joplin#markdown)]
+[Joplin](https://joplinapp.org/) is a free, open source note taking and to-do application, which can handle a large number of notes organised into notebooks. The notes are in [Markdown Format](https://github.com/laurent22/joplin#markdown)]
 
 One of the most searched for features in Joplin is the ability to [share a note](https://discourse.joplinapp.org/t/sharing-notes-or-notebooks/67). This is technically tricky, especially when End-to-End Encryption is enabled within Joplin. Unfortunately it is not as simple as sharing the backend files.  
 
