@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
+const rateLimiter = require('express-rate-limit');
 
 const Note = require('../models/note');
+
+const notePostRateLimiter = rateLimiter({
+	windowMs: 60 * 60 * 1000,
+	max: 200,
+	message: 'Too many shares from this IP! Try again in an hour...',
+});
 
 router.get('/', (req, res) => {
 	res.status(501).send('not implemented');
 });
 
-router.post('/', async (req, res) => {
+router.post('/', notePostRateLimiter, async (req, res) => {
 	let noteData, encryptionType, originator;
 	try {
 		noteData = req.body.noteContents;
