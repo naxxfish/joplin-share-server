@@ -12,15 +12,22 @@ This server aims to be a middle point which two Joplin users can exchange encryp
 
 ***ALPHA***: This will become simpler!
 
-First clone the the repo
+Run the container from Docker Hub:
 
-    git clone git@github.com:naxxfish/joplin-share-server.git
+    docker run  -p 3000:3000 -e REDIS_HOST=redisServer naxxfish/joplin-share-server
 
-Then run docker-compose to bring up the service
+Or use the included [`docker-compose.yml`](docker-compose.yml) file to run the container and redis together. 
 
-    docker-compose up -d
+Once running you can access it on port 3000.
 
-The service will be running on port 3000. 
+### Configuration
+Configuration is by environment variables - the available parameters are:
+#### `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`
+These parameters specify the location of a [redis](https://redis.io/) server, the port and whether to use a password or not.
+
+#### `NODE_ENV`
+This can be set to `development` if you want increased debugging information. 
+
 
 ## API Reference
 
