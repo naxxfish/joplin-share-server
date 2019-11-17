@@ -31,25 +31,17 @@ function validateNote(noteValue) {
 }
 
 function generateToken() {
-	return new Promise((resolve, reject) => {
-		const crypto = require('crypto');
-		crypto.randomBytes(256, (err, buf) => {
-			if (err)
-				reject(err);
-			resolve(buf.toString('hex'));
-		});
-	});
+	return require('crypto').randomBytes(128).toString('hex');
 }
 
-async function createNote(noteData, encryptionType, originator) {
-	const noteId = uuid();
+function createNote(noteData, encryptionType, originator) {
 	const noteValue = {
-		noteId,
+		noteId: uuid(),
 		noteData,
 		encryptionType,
 		originator,
-		readOnlyToken: await generateToken(),
-		readWriteToken: await generateToken(),
+		readOnlyToken: generateToken(),
+		readWriteToken: generateToken(),
 		dateCreated: new Date(),
 	};
 	// validate the data
@@ -78,8 +70,8 @@ async function createNote(noteData, encryptionType, originator) {
 		logger.log('debug', `Created note ${response.rows[0].note_id} for ${response.rows[0].note_originator}`);
 		return {
 			id: response.rows[0].note_id,
-			readOnlyToken: response.rows[0].note_readonly_token,
-			readWriteToken: response.rows[0].note_readwrite_token,
+			readOnlyToken: noteValue.readOnlyToken,
+			readWriteToken: noteValue.readWriteToken,
 		};
 	});
 }

@@ -62,8 +62,15 @@ describe('NoteModel', function() {
 	});
 
 	describe('createNote', function() {
+		let queryStub;
+		beforeEach(function() {
+			queryStub = sinon.stub(db, 'query')
+		});
+		afterEach(function() {
+			queryStub.restore();
+		});
 		it('creates a note with valid data', async function() {
-			const queryStub = sinon.stub(db, 'query').callsFake(() => {
+			queryStub.callsFake(() => {
 				return new Promise((resolve) => {
 					resolve({
 						rows: [
@@ -77,43 +84,35 @@ describe('NoteModel', function() {
 			result.id.should.be.a('string');
 			result.readOnlyToken.should.be.a('string');
 			result.readWriteToken.should.be.a('string');
-			result.should.equal(TEST_NOTE_ID);
+			result.id.should.equal(TEST_NOTE_ID);
 			queryStub.restore();
 		});
 
 		it('does not create creates a note with invalid data', function() {
-			const queryStub = sinon.stub(db, 'query');
 			chai.expect(function() {
 				Note.createNote('aGk=asdfasdf', 'AES-128', 'test_originator');
 			}).to.throw();
 			queryStub.should.have.not.been.called;
-			queryStub.restore();
 		});
 
 		it('throws an error when the note data is invalid', function() {
-			const queryStub = sinon.stub(db, 'query');
 			chai.expect(function() {
 				Note.createNote('aGk=asdfasdf', 'AES-128', 'test_originator');
 			}).to.throw();
 			queryStub.should.have.not.been.called;
-			queryStub.restore();
 		});
 
 		it('throws an error when encryption type is wrong', function() {
-			const queryStub = sinon.stub(db, 'query');
 			chai.expect(function() {
 				Note.createNote('aGk=', 'MIB-128', 'test_originator');
 			}).to.throw();
 			queryStub.should.have.not.been.called;
-			queryStub.restore();
 		});
 		it('throws an error when originator ID is too long', function() {
-			const queryStub = sinon.stub(db, 'query');
 			chai.expect(function() {
-				Note.createNote('aGk=', 'MIB-128', 'test_originator'.repeat(100));
+				Note.createNote('aGk=', 'AES-128', 'test_originator'.repeat(100));
 			}).to.throw();
 			queryStub.should.have.not.been.called;
-			queryStub.restore();
 		});
 	});
 });
