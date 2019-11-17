@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
 	res.status(501).send('not implemented');
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 	let noteData, encryptionType, originator;
 	try {
 		noteData = req.body.noteContents;
@@ -25,7 +25,7 @@ router.post('/', (req, res) => {
 	}
 	let noteId;
 	try {
-		noteId = Note.createNote(noteData, encryptionType, originator);
+		noteId = await Note.createNote(noteData, encryptionType, originator);
 	} catch (e) {
 		res.status(500).send({
 			status: '500',

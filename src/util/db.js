@@ -1,36 +1,18 @@
 const logger = require('./logger');
-const redis = require('redis');
 
-const redisConnectionOptions = {
-	host: process.env['REDIS_HOST'] || 'localhost',
-	port: process.env['REDIS_PORT'] || 6379,
-	password: process.env['REDIS_PASSWORD'] || undefined,
-};
+const { Pool } = require('pg');
 
-if (redisConnectionOptions.password !== undefined) {
-	logger.log('info', 'Authenticating to redis with a password');
-} else {
-	logger.log('info', 'Not authentication with redis');
-}
+const pool = new Pool({
+	connectionString: process.env.DATABASE_URL,
+});
+logger.log('debug', 'PostgreSQL connection string', process.env.DATABASE_URL);
 
-// connect to the DB
-const client = redis.createClient(redisConnectionOptions);
-
-// Hook up logging events
-client.on('error', (err) => {
-	logger.log('error', `Database connection to redis failed: ${err}`);
+pool.on('connect', () => {
+	logger.log('info', 'PostgreSQL connection established');
 });
 
-client.on('connect', () => {
-	logger.log('info', 'Connected to database');
+pool.on('error', (error) => {
+	logger.log('error',  `PostgreSQL Error: ${error}`);
 });
 
-client.on('reconnecting', () => {
-	logger.log('warn', 'Reconnecting to database...');
-});
-
-client.on('warning', (warning) => {
-	logger.log('warn', `Redis warning: ${warning}`);
-});
-
-module.exports = client;
+module.exports = pool;
