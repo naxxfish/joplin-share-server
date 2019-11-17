@@ -22,7 +22,7 @@ client.connect((error) => {
 	}
 	const createQueryPromises = [];
 	createQueryPromises.push(
-		client.query(`CREATE TABLE "notes" (
+		client.query(`CREATE TABLE IF NOT EXISTS "notes" (
 			"note_data" text NOT NULL,
 			"note_encryption_type" text NOT NULL,
 			"note_originator" text NOT NULL,
