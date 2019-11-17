@@ -76,9 +76,10 @@ function createNote(noteData, encryptionType, originator) {
 	});
 }
 
-function getNote(noteId) {
-	return db.query('SELECT * FROM notes WHERE note_id=$1 LIMIT 1', [
+function getNote(noteId, token) {
+	return db.query('SELECT * FROM notes WHERE note_id=$1 AND (note_readonly_token=$2 OR note_readwrite_token=$2) LIMIT 1', [
 		noteId,
+		token,
 	]).then(response => {
 		const noteObject = {
 			noteContents: response.rows[0].note_data,
@@ -91,9 +92,10 @@ function getNote(noteId) {
 	});
 }
 
-function getNoteVersion(noteId) {
-	return db.query('SELECT note_version FROM notes WHERE note_id=$1 LIMIT 1', [
+function getNoteVersion(noteId, token) {
+	return db.query('SELECT note_version FROM notes WHERE note_id=$1 AND (note_readonly_token=$2 OR note_readwrite_token=$2) LIMIT 1', [
 		noteId,
+		token,
 	]).then(response => {
 		logger.log('debug', `Note Version ${noteId} retrieved`);
 		if (response.rows.length === 0)

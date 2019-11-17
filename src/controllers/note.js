@@ -49,7 +49,8 @@ router.post('/', notePostRateLimiter, async (req, res) => {
 });
 
 router.get('/:noteId', (req, res) => {
-	Note.getNote(req.params['noteId'])
+	const token = req.query.token;
+	Note.getNote(req.params['noteId'], token)
 		.then((note) => {
 			res.status(200).send(note);
 		})
@@ -62,7 +63,8 @@ router.get('/:noteId', (req, res) => {
 });
 
 router.get('/:noteId/version', (req, res) => {
-	Note.getNoteVersion(req.params['noteId'])
+	const token = req.query.token;
+	Note.getNoteVersion(req.params['noteId'], token)
 		.then((noteVersion) => {
 			res.status(200).send({
 				version: noteVersion,
