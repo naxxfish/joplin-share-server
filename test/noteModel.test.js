@@ -64,7 +64,7 @@ describe('NoteModel', function() {
 	describe('createNote', function() {
 		let queryStub;
 		beforeEach(function() {
-			queryStub = sinon.stub(db, 'query')
+			queryStub = sinon.stub(db, 'query');
 		});
 		afterEach(function() {
 			queryStub.restore();
