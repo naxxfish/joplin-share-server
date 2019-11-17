@@ -5,7 +5,7 @@ if (connectionString === undefined) {
 	console.error('No connection string supplied!');
 	process.exit(1);
 } else {
-	console.log('Connection string defined!');
+	console.log(`Connection string defined! ${connectionString}`);
 }
 let client;
 try {
