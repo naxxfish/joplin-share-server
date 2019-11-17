@@ -1,7 +1,6 @@
 const uuid = require('uuid/v4');
 const logger = require('../util/logger');
 const db = require('../util/db');
-const util = require('util');
 const SUPPORTED_ENCRYPTION_TYPES = [
 	'AES-128',
 	'AES-256',
@@ -42,50 +41,45 @@ function createNote(noteData, encryptionType, originator) {
 	};
 	// validate the data
 	validateNote(noteValue);
-	try {
-		db.set(`note.${noteId}`, JSON.stringify(noteValue));
-		db.set(`note.${noteId}.version`, '1');
-		logger.log('debug', `Created note from ${originator}`);
-	} catch (e) {
-		logger.log('error', `Error creating note key: ${e}`);
-		throw e;
-	}
-	return noteId;
+	return db.query(
+		'INSERT INTO notes(note_id, note_data, note_encryption_type, note_originator, note_date_created, note_version) VALUES($1, $2, $3, $4, $5, $6) RETURNING note_id, note_originator',
+		[
+			noteValue.noteId,
+			noteValue.noteData,
+			noteValue.encryptionType,
+			noteValue.originator,
+			noteValue.dateCreated,
+			1,
+		],
+	).then((response) => {
+		logger.log('debug', `Created note ${response.rows[0].note_id} for ${response.rows[0].note_originator}`);
+		return response.rows[0].note_id;
+	});
 }
 
 function getNote(noteId) {
-	return new Promise((resolve, reject) => {
-		const keyPromises = [];
-		const dbGetPromise = util.promisify(db.get).bind(db);
-		keyPromises.push(dbGetPromise(`note.${noteId}`));
-		keyPromises.push(dbGetPromise(`note.${noteId}.version`));
-		Promise.all(keyPromises)
-			.then(answers => {
-				const noteContentsQuery = answers[0];
-				const noteVersion = answers[1];
-				const noteObject = JSON.parse(noteContentsQuery.toString('utf-8'));
-				noteObject.version = noteVersion.toString('utf-8');
-				resolve(noteObject);
-			})
-			.catch((err) => {
-				reject(err);
-			});
+	return db.query('SELECT * FROM notes WHERE note_id=$1 LIMIT 1', [
+		noteId,
+	]).then(response => {
+		const noteObject = {
+			noteContents: response.rows[0].note_data,
+			originator: response.rows[0].note_originator,
+			version: response.rows[0].note_version,
+			encryption: response.rows[0].note_encryption,
+		};
+		logger.log('debug', `Note ${noteId} retrieved`);
+		return noteObject;
 	});
 }
 
 function getNoteVersion(noteId) {
-	return new Promise((resolve, reject) => {
-		db.get(`note.${noteId}.version`, (err, reply) => {
-			if (err) {
-				reject(err);
-			} else {
-				if (reply !== null) {
-					resolve(reply.toString('utf-8'));
-				} else {
-					reject(new Error('note does not exist'));
-				}
-			}
-		});
+	return db.query('SELECT note_version FROM notes WHERE note_id=$1 LIMIT 1', [
+		noteId,
+	]).then(response => {
+		logger.log('debug', `Note Version ${noteId} retrieved`);
+		if (response.rows.length === 0)
+			throw new Error('Note does not exist');
+		return response.rows[0].note_version;
 	});
 }
 
