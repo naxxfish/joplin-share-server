@@ -3,14 +3,17 @@ services:
   app:
     build: .
     environment:
-      REDIS_HOST: redis
-      REDIS_PASSWORD: redis
+      DATABASE_URL: postgres://admin:admin@postgres/notes
     ports:
       - "3000:3000"
-  redis:
-    image: redis:alpine
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: notes
+  adminer:
+    image: adminer
+    restart: always
     ports:
-      - "6379"
-    volumes:
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+      - 8080:8080

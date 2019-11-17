@@ -19,7 +19,7 @@
 		"postdocker:build": "cross-conf-env docker image tag $npm_package_config_imageRepo:$npm_package_version $npm_package_config_imageRepo:latest",
 		"docker:publish": "cross-conf-env docker image push $npm_package_config_imageRepo:$npm_package_version",
 		"postdocker:publish": "cross-conf-env docker image push $npm_package_config_imageRepo:latest",
-		"postdeploy": "psql $DATABASE_URL -f src/database/create.sql"
+		"postdeploy": "node ./src/util/install"
 	},
 	"repository": {
 		"type": "git",
