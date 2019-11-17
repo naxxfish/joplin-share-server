@@ -1,6 +1,6 @@
 # Joplin Share Server
 
-![GitHub package.json version](https://img.shields.io/github/package-json/v/naxxfish/joplin-share-server) ![Travis (.org)](https://img.shields.io/travis/naxxfish/joplin-share-server) [![Coverage Status](https://coveralls.io/repos/github/naxxfish/joplin-share-server/badge.svg?branch=master)](https://coveralls.io/github/naxxfish/joplin-share-server?branch=master)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/naxxfish/joplin-share-server) ![Travis (.org)](https://img.shields.io/travis/naxxfish/joplin-share-server) [![Coverage Status](https://coveralls.io/repos/github/naxxfish/joplin-share-server/badge.svg?branch=master)](https://coveralls.io/github/naxxfish/joplin-share-server?branch=master) ![GitHub](https://img.shields.io/github/license/naxxfish/joplin-share-server)
 
 [Joplin](https://joplinapp.org/) is a free, open source note taking and to-do application, which can handle a large number of notes organised into notebooks. The notes are in [Markdown Format](https://github.com/laurent22/joplin#markdown)
 
@@ -106,7 +106,7 @@ You can build this with npm as usual:
 This server was entirely made speculatively in response to the feature request in the Joplin forums. Feel free to raise a PR.  Please make sure 
 
 ## License
-![GitHub](https://img.shields.io/github/license/naxxfish/joplin-share-server)
+
 The MIT License (MIT)
 
 Copyright (c) 2019 Chris Roberts
