@@ -81,6 +81,8 @@ function getNote(noteId, token) {
 		noteId,
 		token,
 	]).then(response => {
+		if (response.rows.length === 0)
+			throw new Error('Note does not exist');
 		const noteObject = {
 			noteContents: response.rows[0].note_data,
 			originator: response.rows[0].note_originator,
