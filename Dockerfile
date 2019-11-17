@@ -2,16 +2,15 @@ FROM node:13.1.0-alpine
 ARG VCS_REF
 ARG BUILD_DATE
 ARG VERSION
-LABEL org.label-schema.name="joplin-share-server" \
-						org.label-schema.description="Note sharing server for Joplin note taking app" \
-						org.label-schma.url="https://github.com/naxxfish/joplin-share-server" \
-						org.label-schma.vcs-url="https://github.com/naxxfish/joplin-share-server" \
-						org.label-schema.vcs-ref=$VCS_REF \
-						org.label-schema.version=$VERSION \
-						org.label-schema.schema-version="1.0" \
-						org.label-schema.docker.cmd="docker run -p 3000:3000 joplin-share-server" \
-						org.label-schema.docker.cmd.devel="docker run -e NODE_ENV=development -p 3000:3000 joplin-share-server"
-
+LABEL org.opencontainers.image.title="joplin-share-server" \
+						org.opencontainers.image..description="Note sharing server for Joplin note taking app" \
+						org.opencontainers.image.url="https://github.com/naxxfish/joplin-share-server" \
+						org.opencontainers.image.source="https://github.com/naxxfish/joplin-share-server" \
+						org.opencontainers.image.authors="Chris Roberts <chris@naxxfish.net> (https://naxxfish.net/)" \
+						org.opencontainers.image.revision=$VCS_REF \
+						org.opencontainers.image.version=$VERSION \
+						org.opencontainers.image.licenses="MIT" \
+						org.opencontainers.image.created=$BUILD_DATE 
 
 WORKDIR /usr/src/app
 ADD package*.json ./
