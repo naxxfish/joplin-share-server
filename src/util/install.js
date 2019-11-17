@@ -1,6 +1,9 @@
 const pg = require('pg');
 const connectionString = process.env.DATABASE_URL;
-
+if (connectionString === undefined) {
+	console.error('No connection string supplied!');
+	process.exit(1);
+}
 const client = new pg.Client(connectionString);
 const createQueryPromises = [];
 createQueryPromises.push(
