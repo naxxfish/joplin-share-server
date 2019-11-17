@@ -7,7 +7,7 @@ if (connectionString === undefined) {
 const client = new pg.Client(connectionString);
 const createQueryPromises = [];
 createQueryPromises.push(
-	client.query(`CREATE TABLE "public"."notes" (
+	client.query(`CREATE TABLE "notes" (
 		"note_data" text NOT NULL,
 		"note_encryption_type" text NOT NULL,
 		"note_originator" text NOT NULL,
