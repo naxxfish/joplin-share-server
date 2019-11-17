@@ -1,1 +1,7 @@
 node_modules
+test
+README.md
+LICENSE
+docker-compose.yml
+.*
+redis

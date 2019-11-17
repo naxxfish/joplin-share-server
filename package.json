@@ -9,8 +9,13 @@
     "lint": "./node_modules/.bin/eslint --ext .js --fix src test",
     "lint-ci": "./node_modules/.bin/eslint --ext .js src test",
     "test": "nyc --reporter=text mocha ./test/*.test.js",
-    "coverage": "nyc report --reporter=text-lcov | coveralls"
-  },
+				"coverage": "nyc report --reporter=text-lcov | coveralls",
+				"predocker:build": "npm run lint && npm run test",
+				"docker:build": "cross-conf-env docker image build . -t $npm_package_config_imageRepo:$npm_package_version --build-arg VCS_REF=`git rev-parse --short HEAD` --build-arg BUILD_DATE=`date -u +'%Y-%m-%dT%H:%M:%SZ'` --build-arg VERSION=$npm_package_version",
+				"postdocker:build": "cross-conf-env docker image tag $npm_package_config_imageRepo:$npm_package_version $npm_package_config_imageRepo:latest",
+				"docker:publish": "cross-conf-env docker image push $npm_package_config_imageRepo:$npm_package_version",
+				"postdocker:publish": "cross-conf-env docker image push $npm_package_config_imageRepo:latest"
+		},
   "repository": {
     "type": "git",
     "url": "https://github.com/naxxfish/joplin-share-server"
@@ -32,6 +37,7 @@
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "coveralls": "^3.0.7",
+    "cross-conf-env": "^1.1.2",
     "eslint": "^6.6.0",
     "eslint-plugin-mocha": "^6.2.1",
     "mocha": "^6.2.2",
@@ -39,5 +45,11 @@
     "nyc": "^14.1.1",
     "sinon": "^7.5.0",
     "sinon-chai": "^3.3.0"
+  },
+  "config": {
+    "imageRepo": "naxxfish/joplin-share-server",
+    "imageName": "joplin-share-server",
+    "imagePort": "3000",
+    "internalContainerPort": "3000"
   }
 }
