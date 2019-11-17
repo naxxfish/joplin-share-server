@@ -2,8 +2,7 @@ process.env.NODE_ENV = 'test';
 const chai = require('chai');
 const sinon = require('sinon');
 const redis = require('redis');
-const sinonChai = require('sinon-chai');
-chai.use(sinonChai);
+chai.use(require('sinon-chai'));
 
 const REDIS_CONFIG_DEFAULTS = {
 	host: 'localhost',

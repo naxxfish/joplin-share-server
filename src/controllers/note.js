@@ -53,7 +53,18 @@ router.get('/:noteId', (req, res) => {
 });
 
 router.get('/:noteId/version', (req, res) => {
-	res.status(501).send('not implemented');
+	Note.getNoteVersion(req.params['noteId'])
+		.then((noteVersion) => {
+			res.status(200).send({
+				version: noteVersion,
+			});
+		})
+		.catch((error) => {
+			res.status(500).send({
+				status: '500',
+				message: error.message,
+			});
+		});
 });
 
 module.exports = router;

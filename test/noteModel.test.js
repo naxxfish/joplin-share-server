@@ -1,6 +1,7 @@
 process.env.NODE_ENV = 'test';
 const chai = require('chai');
 chai.use(require('chai-as-promised'));
+chai.use(require('sinon-chai'));
 chai.should();
 const sinon = require('sinon');
 
@@ -29,10 +30,15 @@ describe('NoteModel', function() {
 		Note = require('../src/models/note');
 		db = require('../src/util/db');
 		dbGetSpy = sinon.stub(db, 'get').callsFake((key, callback) => {
-			if (key === `note.${TEST_NOTE_ID}`) {
+			switch (key) {
+			case `note.${TEST_NOTE_ID}`:
 				callback(null, JSON.stringify(TEST_NOTE));
-			} else {
-				callback(new Error('key does not exist'));
+				break;
+			case `note.${TEST_NOTE_ID}.version`:
+				callback(null, '1');
+				break;
+			default:
+				callback(null, null);
 			}
 		});
 		dbSetSpy = sinon.stub(db, 'set').returns(true);
@@ -42,21 +48,36 @@ describe('NoteModel', function() {
 		delete require.cache[require.resolve('redis')];
 		redisClientStub.restore();
 	});
-
+	describe('getNoteVersion', function() {
+		it('should get the version of a note which exists', async function() {
+			const version = await Note.getNoteVersion(TEST_NOTE_ID);
+			chai.expect(version).to.equal('1');
+		});
+		it('should throw for notes that do not exist', async function() {
+			chai.expect(Note.getNoteVersion('abc123')).to.be.rejectedWith(Error);
+		});
+	});
 	describe('getNote', function() {
 		afterEach(function() {
 			dbGetSpy.resetHistory();
 		});
 		it('should get a note with a valid ID', async function() {
 			const note = await Note.getNote(TEST_NOTE_ID);
-			chai.expect(dbGetSpy.calledWith(`note.${TEST_NOTE_ID}`));
+			dbGetSpy.should.have.been.calledWith(`note.${TEST_NOTE_ID}`);
 			chai.expect(note).to.include.all.keys(Object.keys(TEST_NOTE));
 			Object.keys(TEST_NOTE).forEach((key) => {
 				chai.expect(TEST_NOTE[key]).to.equal(note[key]);
 			});
+			chai.expect(note['version']).to.equal('1');
 		});
 		it('should throw an error with an invalid ID', function() {
 			chai.expect(Note.getNote('abc123')).to.be.rejectedWith(Error);
+		});
+		it('should get a note version with a valid ID', async function() {
+			const note = await Note.getNote(TEST_NOTE_ID);
+			dbGetSpy.should.have.been.calledWith(`note.${TEST_NOTE_ID}`);
+			dbGetSpy.should.have.been.calledWith(`note.${TEST_NOTE_ID}.version`);
+			chai.expect(note['version']).to.equal('1');
 		});
 	});
 
@@ -69,7 +90,12 @@ describe('NoteModel', function() {
 			result.should.be.a('string');
 			result.should.have.length(36);
 			// should have written to the database with the uuid it returned
-			chai.assert(dbSetSpy.calledWith(`note.${result}`));
+			dbSetSpy.should.have.been.calledWith(`note.${result}`);
+		});
+		it('creates a note with valid data of version 1', function() {
+			let result = Note.createNote('aGk=', 'AES-128', 'test_originator');
+			// should have written to the database with the uuid it returned
+			dbSetSpy.should.have.been.calledWith(`note.${result}.version`);
 		});
 		it('does not create creates a note with invalid data', function() {
 			chai.expect(function() {
