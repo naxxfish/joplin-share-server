@@ -2,7 +2,7 @@
 	"author": "Chris Roberts <chris@naxxfish.net> (http://naxxfish.net/)",
 	"name": "joplin-share-server",
 	"description": "Backend to enable encrypted note sharing in Joplin",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"main": "src/app.js",
 	"engines": {
 		"node": "13.1.0",
