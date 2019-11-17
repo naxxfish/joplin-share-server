@@ -1,10 +1,20 @@
 const pg = require('pg');
 const connectionString = process.env.DATABASE_URL;
+console.log('Installing database schema...');
 if (connectionString === undefined) {
 	console.error('No connection string supplied!');
 	process.exit(1);
+} else {
+	console.log('Connection string defined!');
 }
-const client = new pg.Client(connectionString);
+let client;
+try {
+	client = new pg.Client(connectionString);
+} catch (e) {
+	console.error(`Couldn't make PostgreSQL client: ${e}`);
+	process.exit(1);
+}
+
 const createQueryPromises = [];
 createQueryPromises.push(
 	client.query(`CREATE TABLE "notes" (
@@ -17,7 +27,8 @@ createQueryPromises.push(
 		CONSTRAINT "notes_note_id" PRIMARY KEY ("note_id")
 	) WITH (oids = false);`));
 Promise.all(createQueryPromises)
-	.then(() => {
+	.then((results) => {
+		console.log(results);
 		console.log('Database initialised!');
 		process.exit(0);
 	})
