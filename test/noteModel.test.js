@@ -73,7 +73,10 @@ describe('NoteModel', function() {
 				});
 			});
 			let result = await Note.createNote('aGk=', 'AES-128', 'test_originator');
-			result.should.be.a('string');
+			result.should.be.a('object');
+			result.id.should.be.a('string');
+			result.readOnlyToken.should.be.a('string');
+			result.readWriteToken.should.be.a('string');
 			result.should.equal(TEST_NOTE_ID);
 			queryStub.restore();
 		});

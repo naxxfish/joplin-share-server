@@ -4,9 +4,10 @@ console.log('Installing database schema...');
 if (connectionString === undefined) {
 	console.error('No connection string supplied!');
 	process.exit(1);
-} else {
-	console.log('Connection string defined!');
 }
+
+console.log('Connection string defined!');
+
 let client;
 try {
 	client = new pg.Client(connectionString);
@@ -28,8 +29,16 @@ client.connect((error) => {
 			"note_date_created" timestamp NOT NULL,
 			"note_id" text NOT NULL,
 			"note_version" bigint NOT NULL,
+			"note_readwrite_token" text NOT NULL,
+			"note_readonly_token" text NOT NULL,
 			CONSTRAINT "notes_note_id" PRIMARY KEY ("note_id")
 		) WITH (oids = false);`));
+	createQueryPromises.push(
+		client.query('ALTER TABLE "notes" ADD COLUMN IF NOT EXISTS note_readwrite_token text;'),
+	);
+	createQueryPromises.push(
+		client.query('ALTER TABLE "notes" ADD COLUMN IF NOT EXISTS note_readonly_token text;'),
+	);
 	Promise.all(createQueryPromises)
 		.then(() => {
 			console.log('Database initialised!');

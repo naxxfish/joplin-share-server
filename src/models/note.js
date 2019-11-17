@@ -30,30 +30,49 @@ function validateNote(noteValue) {
 	}
 }
 
-function createNote(noteData, encryptionType, originator) {
+function generateToken() {
+	return new Promise((resolve, reject) => {
+		const crypto = require('crypto');
+		crypto.randomBytes(256, (err, buf) => {
+			if (err)
+				reject(err);
+			resolve(buf.toString('hex'));
+		});
+	});
+}
+
+async function createNote(noteData, encryptionType, originator) {
 	const noteId = uuid();
 	const noteValue = {
 		noteId,
 		noteData,
 		encryptionType,
 		originator,
+		readOnlyToken: await generateToken(),
+		readWriteToken: await generateToken(),
 		dateCreated: new Date(),
 	};
 	// validate the data
 	validateNote(noteValue);
 	return db.query(
-		'INSERT INTO notes(note_id, note_data, note_encryption_type, note_originator, note_date_created, note_version) VALUES($1, $2, $3, $4, $5, $6) RETURNING note_id, note_originator',
+		'INSERT INTO notes(note_id, note_data, note_encryption_type, note_originator, note_date_created, note_version, note_readwrite_token, note_readonly_token) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING note_id, note_originator',
 		[
 			noteValue.noteId,
 			noteValue.noteData,
 			noteValue.encryptionType,
 			noteValue.originator,
 			noteValue.dateCreated,
+			noteValue.readWriteToken,
+			noteValue.readOnlyToken,
 			1,
 		],
 	).then((response) => {
 		logger.log('debug', `Created note ${response.rows[0].note_id} for ${response.rows[0].note_originator}`);
-		return response.rows[0].note_id;
+		return {
+			id: response.rows[0].note_id,
+			readOnlyToken: response.rows[0].note_readonly_token,
+			readWriteToken: response.rows[0].note_readwrite_token,
+		};
 	});
 }
 

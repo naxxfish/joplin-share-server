@@ -30,9 +30,9 @@ router.post('/', notePostRateLimiter, async (req, res) => {
 		});
 		return;
 	}
-	let noteId;
+	let noteCreateResult;
 	try {
-		noteId = await Note.createNote(noteData, encryptionType, originator);
+		noteCreateResult = await Note.createNote(noteData, encryptionType, originator);
 	} catch (e) {
 		res.status(500).send({
 			status: '500',
@@ -41,7 +41,9 @@ router.post('/', notePostRateLimiter, async (req, res) => {
 		return;
 	}
 	res.status(200).send({
-		noteId,
+		id: noteCreateResult.id,
+		readWriteToken: noteCreateResult.readWriteToken,
+		readOnlyToken: noteCreateResult.readOnlyToken,
 		version: '1',
 	});
 });
