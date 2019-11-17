@@ -5,7 +5,7 @@ if (connectionString === undefined) {
 	console.error('No connection string supplied!');
 	process.exit(1);
 } else {
-	console.log(`Connection string defined! ${connectionString}`);
+	console.log(`Connection string defined!`);
 }
 let client;
 try {
@@ -31,8 +31,7 @@ client.connect((error) => {
 			CONSTRAINT "notes_note_id" PRIMARY KEY ("note_id")
 		) WITH (oids = false);`));
 	Promise.all(createQueryPromises)
-		.then((results) => {
-			console.log(results);
+		.then(() => {
 			console.log('Database initialised!');
 			process.exit(0);
 		})
