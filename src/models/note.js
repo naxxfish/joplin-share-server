@@ -55,7 +55,15 @@ async function createNote(noteData, encryptionType, originator) {
 	// validate the data
 	validateNote(noteValue);
 	return db.query(
-		'INSERT INTO notes(note_id, note_data, note_encryption_type, note_originator, note_date_created, note_version, note_readwrite_token, note_readonly_token) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING note_id, note_originator',
+		`INSERT INTO notes(
+			note_id, 
+			note_data, 
+			note_encryption_type, 
+			note_originator, 
+			note_date_created, 
+			note_readwrite_token, 
+			note_readonly_token,
+			note_version ) VALUES($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
 		[
 			noteValue.noteId,
 			noteValue.noteData,
