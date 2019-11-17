@@ -14,16 +14,18 @@ This server aims to be a middle point which two Joplin users can exchange encryp
 
 Run the container from Docker Hub:
 
-    docker run  -p 3000:3000 -e REDIS_HOST=redisServer naxxfish/joplin-share-server
+    docker run  -p 3000:3000 -e DATABASE_URL=pgsql://admin:admin@postgres/notes naxxfish/joplin-share-server
 
-Or use the included [`docker-compose.yml`](docker-compose.yml) file to run the container and redis together. 
+Or use the included [`docker-compose.yml`](docker-compose.yml) file to run the container and PostgreSQL together. 
 
 Once running you can access it on port 3000.
 
 ### Configuration
 Configuration is by environment variables - the available parameters are:
-#### `REDIS_HOST`, `REDIS_PORT`, `REDIS_PASSWORD`
-These parameters specify the location of a [redis](https://redis.io/) server, the port and whether to use a password or not.
+#### `DATABASE_URL`
+This parameter specifies the location of a PostgreSQL server.  It should be something like:
+   
+			pgsql://user:pass@host/database_name
 
 #### `NODE_ENV`
 This can be set to `development` if you want increased debugging information. 
